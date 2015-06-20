@@ -1,2 +1,2 @@
-# vpn_admin
-Server to administrate VPN accounts
+# proxy_admin
+Server to administrate accounts
