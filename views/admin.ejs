@@ -1,0 +1,78 @@
+<!-- views/admin.ejs -->
+<!doctype html>
+<html>
+<head>
+    <title>VPN Administration</title>
+    <% include ./partials/head %>
+</head>
+
+<body>
+<div class="container">
+<div class="row">
+    <div class="col-sm-2 col-sm-offset-10">
+	<a href="/logout">Log Out</a>
+    </div>
+</div>
+<% if( typeof errCode != "undefined" ) { %>
+<div class="alert alert-danger">Action Succeeded : <%= errCode %></div>
+<% } %>
+<div class="row" ng-app="formApp" ng-controller="formController">
+    <div class="col-sm-8 col-sm-offset-2">
+        <!--form action="/admin" method="post"-->
+        <form> <!--ng-submit="submitAddUserAccount()"-->
+	    <div class="row">
+	        <div id="username-group" class="form-group col-sm-6">
+	            <label>New Account</label>
+	    	    <input type="text" class="form-control" name="username" ng-model="username" ng-required>
+	        </div>
+	        <div id="password-group" class="form-group col-sm-6">
+		    <label>Password</label>
+		    <input type="password" class="form-control" name="password" ng-model="password" ng-required>
+	        </div>
+	        <button ng-click="submitAddUserAccount()" class="btn btn-warning btn-md">Add User</button>
+	        <button ng-click="submitDelUserAccount()" class="btn btn-warning btn-md">Delete User</button>
+	    </div>
+
+	</form>
+    </div>
+</div>
+
+<script>
+    var formApp = angular.module('formApp', []);
+    formApp.controller('formController', function($scope, $http){
+	$scope.submitAddUserAccount = function() {
+	    var dataObj = {
+		account : {
+		    username : $scope.username,
+		    password : $scope.password
+		},
+	    };
+	    $http.post('/admin-add', dataObj).
+		success(function(dataFromServer,status,headers,config){
+		    console.log(dataFromServer);
+		}).
+		error(function(dataFromServer,status,headers,config){
+		    alert("submitting form failed!");
+		});
+        }
+
+        $scope.submitDelUserAccount = function() {
+	    var dataObj = {
+		account : {
+		    username : $scope.username,
+		    password : $scope.password
+		},
+	    };
+	    $http.post('/admin-del', dataObj).
+		success(function(dataFromServer,status,headers,config){
+		    console.log(dataFromServer);
+		}).
+		error(function(dataFromServer,status,headers,config){
+		    alert("submitting form failed!");
+		});
+        }
+    });
+
+</script>
+</body>
+</html>
