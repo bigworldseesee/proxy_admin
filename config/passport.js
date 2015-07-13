@@ -1,7 +1,7 @@
 // config/passport.js
 
 // load all the things we need
-var LocalStrategy   = require('passport-local').Strategy;
+var BasicStrategy = require('passport-http').BasicStrategy;
 
 // load up the user model
 var User            = require('../app/models/user');
@@ -29,7 +29,7 @@ module.exports = function(passport) {
     // =========================================================================
     // LOCAL LOGIN =============================================================
     // =========================================================================
-    passport.use('local-login', new LocalStrategy({
+    passport.use('basic-login', new BasicStrategy({
         usernameField : 'username',
         passwordField : 'password',
         passReqToCallback : true // allows us to pass back the entire request to the callback
@@ -55,5 +55,4 @@ module.exports = function(passport) {
         });
 
     }));
-
 };

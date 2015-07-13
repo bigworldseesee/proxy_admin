@@ -1,9 +1,10 @@
 //server.js
 
 //set up =================================================
+var config = require('./config/config');
 var express  = require('express');
 var app      = express();
-var port     = process.env.PORT || 8080;
+var port     = process.env.PORT || config.port;
 var mongoose = require('mongoose');
 var passport = require('passport');
 var flash    = require('connect-flash');
@@ -13,7 +14,6 @@ var cookieParser = require('cookie-parser');
 var bodyParser   = require('body-parser');
 var session      = require('express-session');
 
-var configDB = require('./config/database.js');
 
 // configuration ===============================================================
 
@@ -30,10 +30,7 @@ app.use(bodyParser.json()); // get information from html forms
 app.set('view engine', 'ejs'); // set up ejs for templating
 
 // required for passport
-app.use(session({secret: 'showmeareasontoletyouvpn',
-                 cookie: { maxAge: 600000 },
-		 resave : true,
-		 saveUninitialized : true })); // session secret
+app.use(session(config.express.session)); // session secret
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
@@ -42,7 +39,7 @@ app.use(flash()); // use connect-flash for flash messages stored in session
 require('./app/routes.js')(app, passport); // load our routes and pass in our app and fully configured passport
 
 // launch ======================================================================
-mongoose.connect(configDB.url, function(err){ // connect to our database
+mongoose.connect(config.database.url, function(err){ // connect to our database
     if(err) throw err;
     app.listen(port, function(){
         console.log('The magic happens on port ' + port);

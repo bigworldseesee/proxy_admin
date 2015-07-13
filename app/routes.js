@@ -6,22 +6,24 @@ module.exports = function(app, passport) {
     // API Request =================
     // ====================================
     app.post('/addaccount', 
-	passport.authenticate('local-login', {session : false}),
-	function(req, res) {
-	    chapAdmin.addAccount(req, function(result){
-		res.json({errCode : result});
-	    });
-        }
+            passport.authenticate('basic-login', {session : false}),
+            function(req, res) {
+                console.log(req.body);
+                chapAdmin.addAccount(req, function(result){
+                    res.json({errCode : result});
+                });
+            }
     );
 
     app.post('/delaccount', 
-	passport.authenticate('local-login', {session : false}),
-	function(req, res) {
-	    chapAdmin.addAccount(req, function(result){
-		res.json({errCode : result});
-	    });
-        }
+            passport.authenticate('basic-login', {session : false}),
+            function(req, res) {
+                chapAdmin.deleteAccount(req, function(result){
+                    res.json({errCode : result});
+                });
+            }
     );
+
     // =====================================
     // HOME PAGE (with login links) ========
     // =====================================
@@ -40,7 +42,8 @@ module.exports = function(app, passport) {
     });
 
     // process the login form
-    app.post('/login', passport.authenticate('local-login', {
+    app.post('/login', passport.authenticate('basic-login', {
+        session : true,
         successRedirect : '/admin', // redirect to the secure profile section
         failureRedirect : '/login', // redirect back to the signup page if there is an error
         failureFlash : true // allow flash messages
@@ -52,24 +55,24 @@ module.exports = function(app, passport) {
     // we will want this protected so you have to be logged in to visit
     // we will use route middleware to verify this (the isLoggedIn function)
     app.get('/admin', isLoggedIn, function(req, res) {
-	res.render('admin.ejs', {
+        res.render('admin.ejs', {
         });
     });
 
     app.post('/admin-add', isLoggedIn, function(req, res) {
-	chapAdmin.addAccount(req, function(result){
-	    res.render('admin.ejs', {
-		errCode : result
-	    });
-	});
+        chapAdmin.addAccount(req, function(result){
+            res.render('admin.ejs', {
+                errCode : result
+            });
+        });
     });
 
     app.post('/admin-del', isLoggedIn, function(req, res) {
-	chapAdmin.deleteAccount(req, function(result){
-	    res.render('admin.ejs', {
-		errCode : result
-	    });
-	});
+        chapAdmin.deleteAccount(req, function(result){
+            res.render('admin.ejs', {
+                errCode : result
+            });
+        });
     });
 
     // =====================================
