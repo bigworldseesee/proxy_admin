@@ -61,17 +61,13 @@ module.exports = function(app, passport) {
 
     app.post('/admin-add', isLoggedIn, function(req, res) {
         chapAdmin.addAccount(req, function(result){
-            res.render('admin.ejs', {
-                errCode : result
-            });
+            res.json({'success' : result});
         });
     });
 
     app.post('/admin-del', isLoggedIn, function(req, res) {
         chapAdmin.deleteAccount(req, function(result){
-            res.render('admin.ejs', {
-                errCode : result
-            });
+            res.json({'success' : result});
         });
     });
 
@@ -92,6 +88,10 @@ function isLoggedIn(req, res, next) {
         return next();
 
     // if they aren't redirect them to the home page
-    res.redirect('/login');
+    if(req.body && req.body.source === 'adminpage') {
+        req.status(401).end();
+    } else {
+        res.redirect('/login');
+    }
 }
 

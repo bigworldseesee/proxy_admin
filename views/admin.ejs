@@ -1,22 +1,23 @@
 <!-- views/admin.ejs -->
 <!doctype html>
-<html>
+<html ng-app="formApp">
 <head>
     <title>VPN Administration</title>
     <% include ./partials/head %>
 </head>
 
 <body>
-<div class="container">
+<div class="container" ng-controller="formController">
 <div class="row">
     <div class="col-sm-2 col-sm-offset-10">
 	<a href="/logout">Log Out</a>
     </div>
 </div>
-<% if( typeof errCode != "undefined" ) { %>
-<div class="alert alert-danger">Action Succeeded : <%= errCode %></div>
-<% } %>
-<div class="row" ng-app="formApp" ng-controller="formController">
+<div ng-class="success ? 'alert alert-success' : 'alert alert-danger'" ng-show="success !== undefined">
+    <p>{{action}} result: {{success}}</p>
+</div>
+
+<div class="row">
     <div class="col-sm-8 col-sm-offset-2">
         <!--form action="/admin" method="post"-->
         <form> <!--ng-submit="submitAddUserAccount()"-->
@@ -39,9 +40,11 @@
 
 <script>
     var formApp = angular.module('formApp', []);
-    formApp.controller('formController', function($scope, $http){
+    formApp.controller('formController', function($scope, $http, $location){
+    console.log('I am in formController');
 	$scope.submitAddUserAccount = function() {
 	    var dataObj = {
+        source : 'adminpage',
 		account : {
 		    username : $scope.username,
 		    password : $scope.password
@@ -49,15 +52,27 @@
 	    };
 	    $http.post('/admin-add', dataObj).
 		success(function(dataFromServer,status,headers,config){
+            console.log(status);
 		    console.log(dataFromServer);
+            $scope.action = "Add Acount";
+            $scope.success = dataFromServer.success;
 		}).
 		error(function(dataFromServer,status,headers,config){
-		    alert("submitting form failed!");
+            console.log(status);
+		    console.log(dataFromServer);
+            if(status === 401) {
+                $location.url('/login');
+            } else {
+                $scope.action = "Add Acount";
+                $scope.success = dataFromServer.success;
+		        alert("submitting form failed!");
+            }
 		});
         }
 
         $scope.submitDelUserAccount = function() {
 	    var dataObj = {
+        source : 'adminpage',
 		account : {
 		    username : $scope.username,
 		    password : $scope.password
@@ -65,10 +80,21 @@
 	    };
 	    $http.post('/admin-del', dataObj).
 		success(function(dataFromServer,status,headers,config){
+            console.log(status);
 		    console.log(dataFromServer);
+            $scope.action = "Delete Acount";
+            $scope.success = dataFromServer.success;
 		}).
 		error(function(dataFromServer,status,headers,config){
-		    alert("submitting form failed!");
+            console.log(status);
+		    console.log(dataFromServer);
+            if(status === 401) {
+                $location.url('/login');
+            } else {
+                $scope.action = "Delete Acount";
+                $scope.success = dataFromServer.success;
+		        alert("submitting form failed!");
+            }
 		});
         }
     });
