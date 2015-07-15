@@ -2,6 +2,7 @@
 
 // load all the things we need
 var BasicStrategy = require('passport-http').BasicStrategy;
+var LocalStrategy = require('passport-local').Strategy;
 
 // load up the user model
 var User            = require('../app/models/user');
@@ -29,12 +30,14 @@ module.exports = function(passport) {
     // =========================================================================
     // LOCAL LOGIN =============================================================
     // =========================================================================
-    passport.use('basic-login', new BasicStrategy({
+    passport.use('basic-login', new LocalStrategy({
         usernameField : 'username',
         passwordField : 'password',
         passReqToCallback : true // allows us to pass back the entire request to the callback
     },
     function(req, username, password, done) { // callback with username and password from our form
+        console.log(username);
+        process.nextTick(function () {
         // we are checking to see if the user trying to login already exists
         User.findOne({ 'username' :  username }, function(err, user) {
             // if there are any errors, return the error before anything else
@@ -59,5 +62,6 @@ module.exports = function(passport) {
             return done(null, user);
         });
 
+        });
     }));
 };

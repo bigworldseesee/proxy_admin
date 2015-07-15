@@ -40,7 +40,7 @@
 
 <script>
     var formApp = angular.module('formApp', []);
-    formApp.controller('formController', function($scope, $http, $location){
+    formApp.controller('formController', function($scope, $http, $window){
     console.log('I am in formController');
 	$scope.submitAddUserAccount = function() {
 	    var dataObj = {
@@ -61,8 +61,10 @@
             console.log(status);
 		    console.log(dataFromServer);
             if(status === 401) {
-                $location.url('/login');
+                console.log('redirecting to /login');
+                $window.location.href = '/login';
             } else {
+                console.log('Cannot Add');
                 $scope.action = "Add Acount";
                 $scope.success = dataFromServer.success;
 		        alert("submitting form failed!");
@@ -89,7 +91,7 @@
             console.log(status);
 		    console.log(dataFromServer);
             if(status === 401) {
-                $location.url('/login');
+                $window.location.href = '/login';
             } else {
                 $scope.action = "Delete Acount";
                 $scope.success = dataFromServer.success;

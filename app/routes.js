@@ -47,7 +47,8 @@ module.exports = function(app, passport) {
         successRedirect : '/admin', // redirect to the secure profile section
         failureRedirect : '/login', // redirect back to the signup page if there is an error
         failureFlash : true // allow flash messages
-    }));
+    }
+    ));
 
     // =====================================
     // Administration SECTION =====================
@@ -89,7 +90,7 @@ function isLoggedIn(req, res, next) {
 
     // if they aren't redirect them to the home page
     if(req.body && req.body.source === 'adminpage') {
-        req.status(401).end();
+        res.status(401).end();
     } else {
         res.redirect('/login');
     }
