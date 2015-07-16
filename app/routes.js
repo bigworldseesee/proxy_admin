@@ -10,7 +10,10 @@ module.exports = function(app, passport) {
             function(req, res) {
                 console.log(req.body);
                 chapAdmin.addAccount(req, function(result){
-                    res.json({errCode : result});
+                    if(!result) {
+                        res.status(403);
+                    }
+                    res.status(200).json({errCode : result});
                 });
             }
     );
@@ -19,7 +22,10 @@ module.exports = function(app, passport) {
             passport.authenticate('basic-login', {session : false}),
             function(req, res) {
                 chapAdmin.deleteAccount(req, function(result){
-                    res.json({errCode : result});
+                    if(!result) {
+                        res.status(403);
+                    }
+                    res.status(200).json({errCode : result});
                 });
             }
     );
