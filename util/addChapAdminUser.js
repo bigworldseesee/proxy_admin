@@ -1,16 +1,15 @@
 var mongoose = require('mongoose');
-var configDB = require('../config/database.js');
+var config = require('../config/config.js');
 var User = require('../app/models/user');
 
-var conn = mongoose.connect(configDB.url, function(err){
+var conn = mongoose.connect(config.database.url, function(err){
     if(err) throw err;
-    console.log('connected ' + configDB.url);
+    console.log('connected ' + config.database.url);
 
     var upload = function() {
         var admin = new User();
-        admin.userip = '128.199.133.225';
-        admin.username = 'vpnadmin@bigworldseesee.com';
-        admin.password = admin.generateHash('VpnAdm!n2015');
+        admin.username = config.auth.username;
+        admin.password = admin.generateHash(config.auth.password);
 
         admin.save(function(err){
             if(err) console.log(err);
